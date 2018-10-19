@@ -2,7 +2,7 @@
  * @Author: mhc 
  * @Date: 2018-10-17 22:41:51 
  * @Last Modified by: mhc
- * @Last Modified time: 2018-10-18 22:18:01
+ * @Last Modified time: 2018-10-19 21:49:26
  */
 
 import React from 'react';
@@ -16,6 +16,8 @@ class SignUpForm extends React.Component {
             email: '',
             password: '',
             passwordConfirmation: '',
+            error: {},
+            isDisabled: false
         }
     }
 
@@ -27,20 +29,25 @@ class SignUpForm extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        if (this.state.passwordConfirmation === this.state.password) {
-            this.props.userSignUp(this.state);
-            console.log(this.state);
-        } else {
-            // alert('两次输入的密码不匹配');
-            this.setState({
-                passwordConfirmation: '',
-                password: ''
-            })
-        }
+        this.setState({ error: {}, isDisabled: true });
+        // 存储在redux中是这样操作就结束了
+        // this.props.userSignUp(this.state);
+        // 不存储在redux时
+        this.props.userSignUp(this.state).then(
+            () => { this.setState({ isDisabled: false }) },
+            (err) => {
+                this.setState({
+                    error: err.response.data.data,
+                    isDisabled: false
+                })
+            }
+        )
     }
 
     render() {
-        const { username, email, password, passwordConfirmation } = this.state;
+        const { username, email, password, passwordConfirmation, error, isDisabled } = this.state;
+        // const { status, data } = this.props.singUpData || {};
+        console.log(error);
         return (
             <React.Fragment>
                 <form onSubmit={this.onSubmit}>
@@ -54,6 +61,9 @@ class SignUpForm extends React.Component {
                             onChange={this.onChange}
                             value={username}
                         />
+                        {
+                            error.username && <span className="form-text text-danger">{error.username}</span>
+                        }
                     </div>
                     <div className="form-group">
                         <div className="control-label">Email</div>
@@ -64,6 +74,9 @@ class SignUpForm extends React.Component {
                             onChange={this.onChange}
                             value={email}
                         />
+                        {
+                            error.email && <span className="form-text text-danger">{error.email}</span>
+                        }
                     </div>
                     <div className="form-group">
                         <div className="control-label">Password</div>
@@ -74,6 +87,9 @@ class SignUpForm extends React.Component {
                             onChange={this.onChange}
                             value={password}
                         />
+                        {
+                            error.password && <span className="form-text text-danger">{error.password}</span>
+                        }
                     </div>
                     <div className="form-group">
                         <div className="control-label">Password Confirmation</div>
@@ -84,9 +100,12 @@ class SignUpForm extends React.Component {
                             onChange={this.onChange}
                             value={passwordConfirmation}
                         />
+                        {
+                            error.passwordConfirmation && <span className="form-text text-danger">{error.passwordConfirmation}</span>
+                        }
                     </div>
                     <div className="form-group">
-                        <button className="btn btn-primary btn-lg">Sing Up</button>
+                        <button disabled={isDisabled} className="btn btn-primary btn-lg">{isDisabled ? 'loading' : 'Sing Up'}</button>
                     </div>
                 </form>
             </React.Fragment>
