@@ -9,7 +9,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk';
 import NavigationBar from './components/NavigationBar';
 import { BrowserRouter as Router } from 'react-router-dom'
-import {Routes} from './routes'
+import { Routes } from './routes'
 
 
 const store = createStore(
@@ -21,8 +21,8 @@ ReactDOM.render(
     <Provider store={store}>
         <Router>
             <div>
-            <NavigationBar/>
-            <Routes/>
+                <NavigationBar />
+                <Routes/>
             </div>
         </Router>
     </Provider>

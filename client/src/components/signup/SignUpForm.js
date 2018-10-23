@@ -2,10 +2,11 @@
  * @Author: mhc 
  * @Date: 2018-10-17 22:41:51 
  * @Last Modified by: mhc
- * @Last Modified time: 2018-10-19 21:49:26
+ * @Last Modified time: 2018-10-23 21:26:29
  */
 
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 
 
 class SignUpForm extends React.Component {
@@ -34,7 +35,14 @@ class SignUpForm extends React.Component {
         // this.props.userSignUp(this.state);
         // 不存储在redux时
         this.props.userSignUp(this.state).then(
-            () => { this.setState({ isDisabled: false }) },
+            () => { 
+                this.setState({ isDisabled: false });
+                this.props.addFlashMessage({
+                    type:'success',
+                    text:" 注册成功！"
+                })
+                this.props.history.push('/') 
+            },
             (err) => {
                 this.setState({
                     error: err.response.data.data,
@@ -114,4 +122,4 @@ class SignUpForm extends React.Component {
 }
 
 
-export default SignUpForm
+export default withRouter(SignUpForm)
